@@ -12,11 +12,17 @@ import { connectDB } from "./config/db.js";
 import { ENV_VARS } from "./config/envVariables.js";
 
 const app = express();
-const port = ENV_VARS.PORT;
+const port = ENV_VARS.PORT||5000;
 
 app.use(express.json()); //will allow us to parse the request body
 app.use(cookieParser());
-app.use(cors());
+// app.use(cors());
+
+const corsOptions = {
+  origin: ENV_VARS.CLIENT_URL, // Allow only your frontend
+  credentials: true, // Allow cookies if needed
+};
+app.use(cors(corsOptions));
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/movie", protectRoute, movieRouter);
@@ -24,6 +30,6 @@ app.use("/api/v1/tv-show", protectRoute, tvShowRouter);
 app.use("/api/v1/search", protectRoute, searchRouter);
 
 app.listen(port, () => {
-  console.log(`Backend server started at http://localhost:${port}`);
+  // console.log(`Backend server started at http://localhost:${port}`);
   connectDB();
 });
